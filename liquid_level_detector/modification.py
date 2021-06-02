@@ -10,7 +10,7 @@ cv2.imshow("color_changer",bottle_gray)
 
 bottle_gray = cv2.split(bottle_gray)[0]
 
-# bottle_gray = cv2.GaussianBlur(bottle_gray, (7, 7), 1)
+bottle_gray = cv2.GaussianBlur(bottle_gray, (7, 7), 1)
 # cv2.imshow("gray", bottle_gray)
 
 # histogram, set manual for threshold

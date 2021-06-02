@@ -1,6 +1,7 @@
 import imutils
 import numpy as np
 import cv2 as C
+
 from object_measurment.test_mx.canny_compe import canny
 import image_bbox_slicer
 
@@ -32,8 +33,8 @@ imgDial = C.dilate(canny_blur_gray, kernel, iterations=3)
 imgThres = C.erode(imgDial, kernel, iterations=2)
 
 # make ROI
-# cnts = C.findContours(gray, C.RETR_EXTERNAL, C.CHAIN_APPROX_SIMPLE)
-# cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+cnts = C.findContours(gray, C.RETR_EXTERNAL, C.CHAIN_APPROX_SIMPLE)
+cnts = cnts[0] if len(cnts) == 2 else cnts[1]
 #
 # for c in cnts:v
 #     x,y,w,h = C.boundingRect(c)
@@ -47,25 +48,6 @@ th_adaptive = C.adaptiveThreshold(blur_slice, 255, C.ADAPTIVE_THRESH_GAUSSIAN_C,
 blur = C.GaussianBlur(slice, (5, 5), 0)
 th_otsu = C.threshold(blur, 0, 255, C.THRESH_BINARY)
 
-
-# set_canny = C.Canny(th_otsu,blur_slice,55, 100)
-
-def auto_canny(image, sigma=0.33):
-    # compute the median of the single channel pixel intensities
-    v = np.median(image)
-    # apply automatic Canny edge detection using the computed median
-    lower = int(max(0, (1.0 - sigma) * v))
-    upper = int(min(255, (1.0 + sigma) * v))
-    edged = C.Canny(image, lower, upper)
-    return edged
-
-
-image = slice
-
-keny = auto_canny(image)
-C.imshow("canny", keny)
-
-# C.imshow("morph_bottle",th_otsu)
 
 # bbox on ROI
 contours = C.findContours(grey, C.RETR_EXTERNAL, C.CHAIN_APPROX_SIMPLE)
