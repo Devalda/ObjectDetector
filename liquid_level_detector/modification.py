@@ -13,9 +13,8 @@ bottle_gray = cv2.split(bottle_gray)[0]
 # bottle_gray = cv2.GaussianBlur(bottle_gray, (7, 7), 1)
 # cv2.imshow("gray", bottle_gray)
 
-# histogram, dont know why ?
+# histogram, set manual for threshold
 # plt.hist(bottle_gray.ravel(), 256,[0, 256]); plt.show()
-
 
 # threshold , manual ?
 T, bottle_threshold = cv2.threshold(bottle_gray, 27.5, 255, cv2.THRESH_BINARY_INV)
@@ -69,5 +68,3 @@ else:
 
 cv2.imshow("Decision", bottle_clone)
 cv2.waitKey(0)
-
-# test github
