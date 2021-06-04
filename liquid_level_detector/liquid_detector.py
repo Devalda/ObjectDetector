@@ -4,7 +4,7 @@ import imutils
 
 print("start")
 # read image and take first channel only
-img = cv2.imread("contoh.png")
+img = cv2.imread("../images/contoh.png")
 bottle_gray = cv2.cvtColor(img , cv2.COLOR_BGR2GRAY)
 bottle_gray = cv2.split(bottle_gray)[0]
 bottle_gray = cv2.GaussianBlur(bottle_gray, (7, 7), 1)
@@ -17,6 +17,9 @@ cv2.imshow("gray", bottle_gray)
 print("start treshold")
 # threshold , manual ?
 (T, bottle_threshold) = cv2.threshold(bottle_gray, 27.5, 255, cv2.THRESH_BINARY_INV)
+cv2.imshow("TH",bottle_threshold)
+
+
 
 kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
 bottle_open = cv2.morphologyEx(bottle_threshold, cv2.MORPH_OPEN, kernel)

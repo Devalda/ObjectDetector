@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # SIMPLE
-img = cv.imread('../brown_btl.png', 0)
+img = cv.imread('../../images/brown_btl.png', 0)
 ret,thresh1 = cv.threshold(img,127,255,cv.THRESH_BINARY)
 ret,thresh2 = cv.threshold(img,127,255,cv.THRESH_BINARY_INV)
 ret,thresh3 = cv.threshold(img,127,255,cv.THRESH_TRUNC)

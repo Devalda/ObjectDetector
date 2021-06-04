@@ -1,3 +1,4 @@
+import cv2
 import cv2 as cv
 import numpy as np
 from matplotlib import pyplot as plt
@@ -9,6 +10,8 @@ ret2,th2 = cv.threshold(img,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)
 # Otsu's thresholding after Gaussian filtering
 blur = cv.GaussianBlur(img,(3,3),2)
 ret3,th3 = cv.threshold(blur,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)
+
+
 # plot all the images and their histograms
 images = [img, 0, th1,
           img, 0, th2,
