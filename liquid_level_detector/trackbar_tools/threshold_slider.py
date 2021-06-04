@@ -6,7 +6,7 @@ def Tracking(x):
 cv2.namedWindow('Threshold Control')
 cv2.createTrackbar('Min', 'Threshold Control', 0, 255, Tracking)
 
-img = cv2.imread("../images/proris_background.png")
+img = cv2.imread("proris_background.png")
 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 while True:

@@ -6,16 +6,11 @@ import numpy as np
 
 def th_a(x):
     print("threshold adaptive",x )
-def th_min(x):
-    print("minimum th", x)
-def th_max(x):
-    print("maximum th", x)
-
 
 cv2.namedWindow('trackbar')
 cv2.createTrackbar('a-th-min','trackbar',0,255,th_a)
-cv2.createTrackbar('th-min','trackbar',0,255,th_min)
-cv2.createTrackbar('th-max','trackbar',0,255,th_max)
+
+th_adaptive = cv2.getTrackbarPos('a-th-min', 'trackbar')
 
 # image process
 img = cv2.imread('../../images/proris_background.png')
@@ -24,7 +19,7 @@ bottle_gray = cv2.split(bottle_gray)[0]
 bottle_gray = cv2.GaussianBlur(bottle_gray, (3, 3), 1)
 
 while True:
-    th_adaptive = cv2.getTrackbarPos('a-th-min', 'trackbar')
+
     bottle_threshold = cv2.adaptiveThreshold(bottle_gray,th_adaptive,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,41,5)
     bottle_threshold = cv2.bitwise_not(bottle_threshold)
     bottle_threshold = imutils.skeletonize(bottle_threshold, size=(5, 5))
