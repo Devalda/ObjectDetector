@@ -5,7 +5,7 @@ import numpy as np
 
 print("start")
 # read image and take first channel only
-img = cv2.imread("../images/proris_background.png")
+img = cv2.imread("../images/proris_new/p3.png")
 bottle_gray = cv2.cvtColor(img , cv2.COLOR_BGR2GRAY)
 bottle_gray = cv2.split(bottle_gray)[0]
 bottle_gray = cv2.GaussianBlur(bottle_gray, (3, 3), 1)
@@ -21,9 +21,11 @@ print("start treshold")
 
 # adaptive threshold || requires odd blocksize
 
-bottle_threshold = cv2.adaptiveThreshold(bottle_gray,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,41,5)
+bottle_threshold = cv2.adaptiveThreshold(bottle_gray,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_OTSU,41,5)
 bottle_threshold = cv2.bitwise_not(bottle_threshold)
-bottle_threshold = imutils.skeletonize(bottle_threshold, size=(5, 5))
+# bottle_threshold = imutils.skeletonize(bottle_threshold, size=(5, 5))
+
+
 # se=cv2.getStructuringElement(cv2.MORPH_RECT , (8,8))
 # bg=cv2.morphologyEx(bottle_threshold, cv2.MORPH_DILATE, se)
 # out_gray=cv2.divide(bottle_threshold, bg, scale=255)
@@ -54,6 +56,8 @@ bottle_threshold = imutils.skeletonize(bottle_threshold, size=(5, 5))
 # bottle_open = cv2.morphologyEx(bottle_threshold, cv2.MORPH_CLOSE, kernel)
 # cv2.imshow("morphology",bottle_open)
 # cv2.waitKey(0)
+
+cv2.imshow("threshold",bottle_threshold)
 
 # final contour
 print("start final contouring")

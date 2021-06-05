@@ -49,7 +49,7 @@ cv2.createTrackbar("max", window_name, 0 ,255, update_max_value)
 
 # BODY
 
-img = cv2.imread("p3.png")
+img = cv2.imread("../../images/proris_new/p2.png")
 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 

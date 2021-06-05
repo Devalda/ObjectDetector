@@ -1,9 +1,22 @@
 import cv2
+import numpy as np
 
+class select_roi():
 
-class roi_group():
+    def select_roi_solo(image):
+        # img_path= image
+        # img_raw = cv2.imread(img_path)
 
-    def select_roi(image):
+        #select ROI function
+        roi = cv2.selectROI(image)
+        print(roi)
+
+        #Crop selected roi from raw image
+        roi_cropped = image[int(roi[1]):int(roi[1]+roi[3]), int(roi[0]):int(roi[0]+roi[2])]
+        cv2.imshow("ROI", roi_cropped)
+        return roi
+
+    def select_roi_group(image):
 
         img_path = image
         img_raw = cv2.imread(img_path)
@@ -34,5 +47,3 @@ class roi_group():
             crop_number += 1
 
         return roi
-
-        cv2.waitKey(0)
