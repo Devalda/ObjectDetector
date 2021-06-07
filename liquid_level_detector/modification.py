@@ -21,7 +21,7 @@ print("start treshold")
 
 # adaptive threshold || requires odd blocksize
 
-bottle_threshold = cv2.adaptiveThreshold(bottle_gray,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_OTSU,41,5)
+bottle_threshold = cv2.adaptiveThreshold(bottle_gray,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,41,5)
 bottle_threshold = cv2.bitwise_not(bottle_threshold)
 # bottle_threshold = imutils.skeletonize(bottle_threshold, size=(5, 5))
 
