@@ -1,4 +1,4 @@
-import cv2
+import cv2 as cv
 from numpy.lib import math
 import numpy as np
 import sys
@@ -11,35 +11,41 @@ image = False
 cam = True
 
 if cam:
-
     # cam
-    # cam = cv2.VideoCapture(0)
-    # cam.set(3, 1280)
-    # cam.set(4, 720)
-    # cam.set(10, 70)
-
+    cam = cv.VideoCapture(0)
+    cam.set(3, 1280)
+    cam.set(4, 720)
+    cam.set(10, 70)
+    rois = []
     while True :
 
         try :
             # test for exeption handling
-            path = "../images/proris_new/p3.png"
-            img = cv2.imread(path)
+            # path = "../images/proris_new/p3.png"
+            # img = cv.imread(path)
 
-            # ret , img = cam.read()
+            ret , img = cam.read()
+            cv.imshow("cam",img)
 
-            img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            img_blur = cv2.GaussianBlur(img_gray, (7, 7), 2)
-            ret, th = cv2.threshold(img_blur, 0, 255, cv2.THRESH_OTSU)
-            img_canny = cv2.Canny(th, 55, 110)
+            if not rois:
+                roi = cv.selectROI("select roi 1", img)
+                rois.append(roi)
+            else:
+                roi = rois[0]
+
+
+            img_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+            img_blur = cv.GaussianBlur(img_gray, (7, 7), 2)
+            ret, th = cv.threshold(img_blur, 0, 255, cv.THRESH_OTSU)
+            img_canny = cv.Canny(th, 55, 110)
 
             # closed line
             kernel = np.ones((5, 5), np.uint8)
-            img_dil = cv2.dilate(img_canny, kernel, iterations=1)
-            img_ero = cv2.erode(img_dil, kernel, iterations=1)
-            closing = cv2.morphologyEx(img_dil, cv2.MORPH_CLOSE, kernel)
+            img_dil = cv.dilate(img_canny, kernel, iterations=1)
+            img_ero = cv.erode(img_dil, kernel, iterations=1)
+            closing = cv.morphologyEx(img_dil, cv.MORPH_CLOSE, kernel)
 
             #roi
-            roi = (0 , 0 , 0 , 0)
             # roi = (354, 730, 252, 280)
             y1 = int(roi[1])
             y2 = int(roi[1] + roi[3])
@@ -52,7 +58,7 @@ if cam:
             # set line inside roi
             minLineLength = 800
             maxLineGap = 10
-            lines = cv2.HoughLinesP(img_roi, 1, np.pi / 180, 100, minLineLength)
+            lines = cv.HoughLinesP(img_roi, 1, np.pi / 180, 100, minLineLength)
 
             final_line = lines[len(lines) - 1]
             print(final_line)
@@ -62,13 +68,13 @@ if cam:
                 x2a = x2
                 y2a = f[3]
 
-            line = cv2.line(cropped, (x1a, y1a), (x2a, y2a), (255, 0, 0), 2)
-            cv2.imshow("line", line)
+            line = cv.line(cropped, (x1a, y1a), (x2a, y2a), (255, 0, 0), 2)
+            cv.imshow("line", line)
 
         # return if the object not ready
         except(AssertionError,TypeError ,ZeroDivisionError ,ValueError ):
             print(f"!! No Data Detected : {sys.exc_info()[0]} !!")
-            if cv2.waitKey(400) & 0xff == ord('q'):
+            if cv.waitKey(1) & 0xff == ord('q'):
                 break
             continue
 
@@ -83,50 +89,49 @@ if cam:
 
         # add statement and create boundingbox decision
         if y2a == mean:
-            bbox1 = cv2.rectangle(img1, (x1, y1), (x2, y2), (0, 255, 0), 5)
-            cv2.putText(bbox1, 'Perfect', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-            cv2.imshow("Decision Box", bbox1)
+            bbox1 = cv.rectangle(img1, (x1, y1), (x2, y2), (0, 255, 0), 5)
+            cv.putText(bbox1, 'Perfect', (x1, y1 - 10), cv.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+            cv.imshow("Decision Box", bbox1)
 
         elif y2a < batas_of:
-            bbox1 = cv2.rectangle(img1, (x1, y1), (x2, y2), (255, 0, 0), 5)
-            cv2.putText(bbox1, 'OverFilled', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-            cv2.imshow("Decision Box", bbox1)
+            bbox1 = cv.rectangle(img1, (x1, y1), (x2, y2), (255, 0, 0), 5)
+            cv.putText(bbox1, 'OverFilled', (x1, y1 - 10), cv.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+            cv.imshow("Decision Box", bbox1)
 
         elif y2a > batas_uf:
-            bbox1 = cv2.rectangle(img1, (x1, y1), (x2, y2), (0, 0, 255), 5)
-            cv2.putText(bbox1, 'UnderFilled', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-            cv2.imshow("Decision Box", bbox1)
+            bbox1 = cv.rectangle(img1, (x1, y1), (x2, y2), (0, 0, 255), 5)
+            cv.putText(bbox1, 'UnderFilled', (x1, y1 - 10), cv.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+            cv.imshow("Decision Box", bbox1)
 
         else:
-            bbox1 = cv2.rectangle(img1, (x1, y1), (x2, y2), (0, 255, 0), 5)
-            cv2.putText(bbox1, 'within target', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-            cv2.imshow("Decision Box", bbox1)
+            bbox1 = cv.rectangle(img1, (x1, y1), (x2, y2), (0, 255, 0), 5)
+            cv.putText(bbox1, 'within target', (x1, y1 - 10), cv.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+            cv.imshow("Decision Box", bbox1)
 
-        if cv2.waitKey(400) & 0xff == ord('q'):
+        if cv.waitKey(1) & 0xff == ord('q'):
             print("--end--of--the--session--")
             break
-
 
 
 if image :
 
     # image
     path = "../images/proris_new/p3.png"
-    img = cv2.imread(path)
-    img_gray    = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    img_blur    = cv2.GaussianBlur(img_gray, (7, 7), 2)
-    ret, th = cv2.threshold(img_blur, 0, 255, cv2.THRESH_OTSU)
-    img_canny   = cv2.Canny(th, 55,110)
+    img = cv.imread(path)
+    img_gray    = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    img_blur    = cv.GaussianBlur(img_gray, (7, 7), 2)
+    ret, th = cv.threshold(img_blur, 0, 255, cv.THRESH_OTSU)
+    img_canny   = cv.Canny(th, 55,110)
 
     # closed line
     kernel  = np.ones((5,5), np.uint8)
-    img_dil = cv2.dilate(img_canny, kernel, iterations=1)
-    img_ero = cv2.erode(img_dil, kernel, iterations=1)
-    closing = cv2.morphologyEx(img_dil, cv2.MORPH_CLOSE, kernel)
+    img_dil = cv.dilate(img_canny, kernel, iterations=1)
+    img_ero = cv.erode(img_dil, kernel, iterations=1)
+    closing = cv.morphologyEx(img_dil, cv.MORPH_CLOSE, kernel)
     while True :
         try:
             # define roi1
-            roi1 = cv2.selectROI("select roi 1",img)
+            roi1 = cv.selectROI("select roi 1",img)
             print("roi",roi1)
             y1 = int(roi1[1])
             y2 = int(roi1[1]+roi1[3])
@@ -140,7 +145,7 @@ if image :
             # set line inside roi1
             minLineLength = 800
             maxLineGap = 10
-            lines = cv2.HoughLinesP(img_roi1,1,np.pi/180,100,minLineLength)
+            lines = cv.HoughLinesP(img_roi1,1,np.pi/180,100,minLineLength)
 
 
             final_line = lines[len(lines)-1]
@@ -151,8 +156,8 @@ if image :
                 x2a = x2
                 y2a = f[3]
 
-            line1 = cv2.line(cropped1, (x1a,y1a), (x2a,y2a), (255,0,0), 2)
-            cv2.imshow("line",line1)
+            line1 = cv.line(cropped1, (x1a,y1a), (x2a,y2a), (255,0,0), 2)
+            cv.imshow("line",line1)
         except(TypeError):
             print("line not detected")
             continue
@@ -174,29 +179,29 @@ if image :
 
         # add statement and create boundingbox decision
         if y2a == mean:
-            bbox1 = cv2.rectangle(img1, (x1, y1), (x2, y2), (0,255,0), 5)
-            cv2.putText(bbox1, 'Perfect', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-            cv2.imshow("Decision Box",bbox1)
+            bbox1 = cv.rectangle(img1, (x1, y1), (x2, y2), (0,255,0), 5)
+            cv.putText(bbox1, 'Perfect', (x1, y1 - 10), cv.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+            cv.imshow("Decision Box",bbox1)
 
         elif y2a < batas_of:
-            bbox1 = cv2.rectangle(img1, (x1, y1), (x2, y2), (255,0,0), 5)
-            cv2.putText(bbox1, 'OverFilled', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-            cv2.imshow("Decision Box",bbox1)
+            bbox1 = cv.rectangle(img1, (x1, y1), (x2, y2), (255,0,0), 5)
+            cv.putText(bbox1, 'OverFilled', (x1, y1 - 10), cv.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+            cv.imshow("Decision Box",bbox1)
 
         elif y2a > batas_uf:
-            bbox1 = cv2.rectangle(img1, (x1, y1), (x2, y2), (0, 0, 255), 5)
-            cv2.putText(bbox1, 'UnderFilled', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-            cv2.imshow("Decision Box",bbox1)
+            bbox1 = cv.rectangle(img1, (x1, y1), (x2, y2), (0, 0, 255), 5)
+            cv.putText(bbox1, 'UnderFilled', (x1, y1 - 10), cv.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+            cv.imshow("Decision Box",bbox1)
 
         else:
-            bbox1 = cv2.rectangle(img1, (x1, y1), (x2, y2), (0,255,0), 5)
-            cv2.putText(bbox1, 'within target', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-            cv2.imshow("Decision Box",bbox1)
+            bbox1 = cv.rectangle(img1, (x1, y1), (x2, y2), (0,255,0), 5)
+            cv.putText(bbox1, 'within target', (x1, y1 - 10), cv.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+            cv.imshow("Decision Box",bbox1)
 
-        if (cv2.waitKey(1) & 0xFF) == ord('q'):
+        if (cv.waitKey(1) & 0xFF) == ord('q'):
             break
 
-    cv2.waitKey(0)
+    cv.waitKey(0)
 
 
 

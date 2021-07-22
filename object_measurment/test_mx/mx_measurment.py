@@ -5,7 +5,6 @@ import utl as u
 import glob
 
 webcam = False
-
 filename = '../R_1.png'
 
 scale = 4

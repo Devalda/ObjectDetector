@@ -107,7 +107,6 @@ if contours:
     height, width, channels = img.shape
     print(f"contour_area = height:{height}, width:{width}")
 
-
     batas_outline_h_kiri = 0
     batas_outline_h_kanan = cropped_area['w']
     batas_outline_v_atas = 0
@@ -135,7 +134,6 @@ if contours:
     line_batas_bawah = cv.line(cropped2, (titik_horizontal_kanan, titik_vertikal_bawah), (titik_horizontal_kanan, batas_outline_v_bawah), (255,0,0), 2)
     line_batas_bawah_tengah = cv.line(cropped2, (c1, titik_vertikal_bawah), (c1, batas_outline_v_bawah), (0,0,255), 2)
     cv.imshow("line batas",line_contour)
-
 
     ## set the biggest contour(eyemark,not blob) us color ##
     # lower = [1, 0, 20]

@@ -61,16 +61,25 @@ if roi:
 
 lines = cv.HoughLinesP(cropped_th,1,np.pi/180,100,800)
 
+print("lines awal",lines)
 
 final_line = lines[len(lines)-1]
-print(final_line)
+print("final_line",final_line)
 for f in final_line:
     x1a = 0
     y1a = f[1]
     x2a = x2
     y2a = f[3]
 
+# for f in lines:
+#     x1a = 0
+#     y1a = f[1]
+#     x2a = x2
+#     y2a = f[3]
+#     cv.imshow(cv.line(img_croped, (x1a, y1a), (x2a, y2a), (0, 255, 0), 2))
+
 line1 = cv.line(img_croped, (x1a,y1a), (x2a,y2a), (0,255,0), 2)
+line2 = cv.line(img_croped, (x1a,y1a), (x2a,y2a), (0,255,0), 2)
 cv.imshow("line",line1)
 
 
